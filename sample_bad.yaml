@@ -1,0 +1,11 @@
+model:
+  source: local
+  id: F:\fake\path\that\does\not\exist
+  modality: llm
+
+quantize:
+  formats: [gguf]
+  gguf_levels: [Q4_K_M]
+
+benchmark:
+  metrics: [perplexity, tok_s]

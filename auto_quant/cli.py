@@ -2,7 +2,9 @@ import typer
 from pathlib import Path
 from rich.console import Console
 from rich.pretty import pprint
+
 from auto_quant.config import AutoQuantConfig
+from auto_quant.ingest.hf_fetcher import fetch_model
 
 app = typer.Typer(
     name="auto-quant",
@@ -45,9 +47,18 @@ def run(
         console.print("\n[yellow]Dry run — no steps will be executed.[/yellow]")
         raise typer.Exit()
 
-    console.print("\n[dim]Pipeline execution not yet implemented.[/dim]")
+    # Phase 1 — Model ingestion
+    console.rule("[bold]Phase 1 — Model Ingestion[/bold]")
+    try:
+        model_dir, modality = fetch_model(cfg.model)
+    except (FileNotFoundError, ValueError) as e:
+        console.print(f"[red]Ingestion error:[/red] {e}")
+        raise typer.Exit(code=1)
+
+    console.print(f"\n[green]Model ready at:[/green] {model_dir}")
+    console.print(f"[green]Modality:[/green] {modality.value if modality else 'unknown'}")
+    console.print("\n[dim]Quantization not yet implemented.[/dim]")
 
 
 if __name__ == "__main__":
     app()
-    
