@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+
+# uv
+.uv/
+
+# Outputs
+outputs/
+
+# Models (never commit weights)
+*.gguf
+*.tflite
+*.bin
+*.safetensors
+
+# Env
+.env
+
+# OS
+.DS_Store
+Thumbs.db
