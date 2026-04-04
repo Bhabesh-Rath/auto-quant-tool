@@ -3,8 +3,9 @@ from pathlib import Path
 from rich.console import Console
 from rich.pretty import pprint
 
-from auto_quant.config import AutoQuantConfig
+from auto_quant.config import AutoQuantConfig, QuantFormat
 from auto_quant.ingest.hf_fetcher import fetch_model
+from auto_quant.quantize.gguf_backend import run_gguf_quantization
 
 app = typer.Typer(
     name="auto-quant",
@@ -57,7 +58,25 @@ def run(
 
     console.print(f"\n[green]Model ready at:[/green] {model_dir}")
     console.print(f"[green]Modality:[/green] {modality.value if modality else 'unknown'}")
-    console.print("\n[dim]Quantization not yet implemented.[/dim]")
+
+    # Phase 2A — GGUF quantization
+    if QuantFormat.gguf in cfg.quantize.formats:
+        console.rule("[bold]Phase 2A — GGUF Quantization[/bold]")
+        try:
+            gguf_results = run_gguf_quantization(
+                model_dir=model_dir,
+                levels=cfg.quantize.gguf_levels,
+            )
+            for level, path in gguf_results.items():
+                console.print(f"  [dim]{level}[/dim] → {path}")
+        except FileNotFoundError as e:
+            console.print(f"[red]Setup error:[/red] {e}")
+            raise typer.Exit(code=1)
+        except RuntimeError as e:
+            console.print(f"[red]Quantization error:[/red] {e}")
+            raise typer.Exit(code=1)
+
+    console.print("\n[dim]Benchmark not yet implemented.[/dim]")
 
 
 if __name__ == "__main__":
