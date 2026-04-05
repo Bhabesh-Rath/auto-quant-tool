@@ -1,0 +1,17 @@
+model:
+  source: huggingface
+  id: google/mobilenet_v2_1.0_224
+  modality: vision
+
+quantize:
+  formats: [tflite]
+  gguf_levels: []
+  gptq_levels: []
+
+benchmark:
+  metrics: [top1_accuracy, latency_ms]
+  soc_target: snapdragon_8_gen_3
+  dataset:
+    name: imagenet-1k
+    split: validation
+    source: hf_datasets

@@ -6,6 +6,8 @@ from rich.pretty import pprint
 from auto_quant.config import AutoQuantConfig, QuantFormat
 from auto_quant.ingest.hf_fetcher import fetch_model
 from auto_quant.quantize.gguf_backend import run_gguf_quantization
+from auto_quant.quantize.gptq_backend import run_gptq_quantization
+from auto_quant.quantize.tflite_backend import run_tflite_conversion
 
 app = typer.Typer(
     name="auto-quant",
@@ -76,6 +78,28 @@ def run(
             console.print(f"[red]Quantization error:[/red] {e}")
             raise typer.Exit(code=1)
 
+    # Phase 2B — GPTQ quantization
+    if QuantFormat.gptq in cfg.quantize.formats:
+        console.rule("[bold]Phase 2B - GPTQ Quantization[/bold]")
+        try:
+            gptq_results = run_gptq_quantization(
+                model_dir=model_dir,
+                levels=cfg.quantize.gptq_levels,
+            )
+            for level, path in gptq_results.items():
+                console.print(f"  [dim]{level}[/dim] -> {path}")
+        except RuntimeError as e:
+            console.print(f"[yellow]GPTQ skipped:[/yellow] {e}")
+            
+    # Phase 2C — TFLite conversion
+    if QuantFormat.tflite in cfg.quantize.formats:
+        console.rule("[bold]Phase 2C - TFLite Conversion[/bold]")
+        try:
+            tflite_path = run_tflite_conversion(model_dir=model_dir)
+            console.print(f"  [dim]int8[/dim] -> {tflite_path}")
+        except RuntimeError as e:
+            console.print(f"[yellow]TFLite skipped:[/yellow] {e}")
+    
     console.print("\n[dim]Benchmark not yet implemented.[/dim]")
 
 
