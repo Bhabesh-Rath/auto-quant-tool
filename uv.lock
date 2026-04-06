@@ -447,6 +447,9 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "huggingface-hub" },
+    { name = "llama-cpp-python" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.4.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "rich" },
@@ -482,7 +485,9 @@ requires-dist = [
     { name = "datasets", marker = "extra == 'benchmark'", specifier = ">=2.0" },
     { name = "gradio", marker = "extra == 'ui'", specifier = ">=4.0" },
     { name = "huggingface-hub", specifier = ">=0.23" },
+    { name = "llama-cpp-python", specifier = ">=0.3.20" },
     { name = "llama-cpp-python", marker = "extra == 'gguf'" },
+    { name = "numpy", specifier = ">=2.2.6" },
     { name = "pandas", marker = "extra == 'benchmark'", specifier = ">=2.0" },
     { name = "plotly", marker = "extra == 'benchmark'", specifier = ">=5.0" },
     { name = "pydantic", specifier = ">=2.0" },

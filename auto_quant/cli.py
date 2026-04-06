@@ -8,6 +8,7 @@ from auto_quant.ingest.hf_fetcher import fetch_model
 from auto_quant.quantize.gguf_backend import run_gguf_quantization
 from auto_quant.quantize.gptq_backend import run_gptq_quantization
 from auto_quant.quantize.tflite_backend import run_tflite_conversion
+from auto_quant.benchmark.real_runner import run_real_benchmark
 
 app = typer.Typer(
     name="auto-quant",
@@ -100,8 +101,22 @@ def run(
         except RuntimeError as e:
             console.print(f"[yellow]TFLite skipped:[/yellow] {e}")
     
-    console.print("\n[dim]Benchmark not yet implemented.[/dim]")
+    # Phase 3A - Real benchmark (GGUF)
+    if QuantFormat.gguf in cfg.quantize.formats:
+        console.rule("[bold]Phase 3A - Real Benchmark[/bold]")
+        try:
+            gguf_dir = Path("outputs/gguf") / (
+                cfg.model.id.replace("/", "_")
+            )
+            results = run_real_benchmark(
+                gguf_dir=gguf_dir,
+                n_gpu_layers=0,
+            )
+        except FileNotFoundError as e:
+            console.print(f"[red]Benchmark error:[/red] {e}")
+            raise typer.Exit(code=1)
 
+    console.print("\n[dim]Pareto report not yet implemented.[/dim]")
 
 if __name__ == "__main__":
     app()
