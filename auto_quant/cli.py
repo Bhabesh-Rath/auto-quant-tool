@@ -9,6 +9,7 @@ from auto_quant.quantize.gguf_backend import run_gguf_quantization
 from auto_quant.quantize.gptq_backend import run_gptq_quantization
 from auto_quant.quantize.tflite_backend import run_tflite_conversion
 from auto_quant.benchmark.real_runner import run_real_benchmark
+from auto_quant.benchmark.sim_runner import run_sim_benchmark
 
 app = typer.Typer(
     name="auto-quant",
@@ -100,8 +101,8 @@ def run(
             console.print(f"  [dim]int8[/dim] -> {tflite_path}")
         except RuntimeError as e:
             console.print(f"[yellow]TFLite skipped:[/yellow] {e}")
-    
-    # Phase 3A - Real benchmark (GGUF)
+
+    # Phase 3A — Real benchmark (GGUF)
     if QuantFormat.gguf in cfg.quantize.formats:
         console.rule("[bold]Phase 3A - Real Benchmark[/bold]")
         try:
@@ -115,6 +116,20 @@ def run(
         except FileNotFoundError as e:
             console.print(f"[red]Benchmark error:[/red] {e}")
             raise typer.Exit(code=1)
+
+    # Phase 3B — Simulated benchmark (TFLite/mobile)
+    if QuantFormat.tflite in cfg.quantize.formats and cfg.benchmark.soc_target:
+        console.rule("[bold]Phase 3B - Simulated Benchmark[/bold]")
+        try:
+            tflite_dir = Path("outputs/tflite") / (
+                cfg.model.id.replace("/", "_")
+            )
+            sim_results = run_sim_benchmark(
+                tflite_dir=tflite_dir,
+                soc_target=cfg.benchmark.soc_target,
+            )
+        except (FileNotFoundError, ValueError) as e:
+            console.print(f"[yellow]Simulated benchmark skipped:[/yellow] {e}")
 
     console.print("\n[dim]Pareto report not yet implemented.[/dim]")
 

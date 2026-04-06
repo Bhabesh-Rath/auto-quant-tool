@@ -1,0 +1,51 @@
+{
+  "snapdragon_8_gen_3": {
+    "name": "Qualcomm Snapdragon 8 Gen 3",
+    "int8_tops": 98,
+    "fp16_tflops": 45,
+    "ram_bandwidth_gbps": 77,
+    "typical_devices": ["Samsung Galaxy S24", "OnePlus 12", "Xiaomi 14"]
+  },
+  "snapdragon_8_gen_2": {
+    "name": "Qualcomm Snapdragon 8 Gen 2",
+    "int8_tops": 75,
+    "fp16_tflops": 34,
+    "ram_bandwidth_gbps": 51,
+    "typical_devices": ["Samsung Galaxy S23", "Sony Xperia 1 V"]
+  },
+  "snapdragon_7s_gen_2": {
+    "name": "Qualcomm Snapdragon 7s Gen 2",
+    "int8_tops": 18,
+    "fp16_tflops": 9,
+    "ram_bandwidth_gbps": 26,
+    "typical_devices": ["Xiaomi Redmi Note 13 Pro", "Motorola Edge 40 Neo"]
+  },
+  "dimensity_9300": {
+    "name": "MediaTek Dimensity 9300",
+    "int8_tops": 80,
+    "fp16_tflops": 40,
+    "ram_bandwidth_gbps": 77,
+    "typical_devices": ["Vivo X100 Pro", "OPPO Find X7"]
+  },
+  "dimensity_7200": {
+    "name": "MediaTek Dimensity 7200",
+    "int8_tops": 16,
+    "fp16_tflops": 8,
+    "ram_bandwidth_gbps": 29,
+    "typical_devices": ["Realme 11 Pro", "Xiaomi Redmi Note 12 Turbo"]
+  },
+  "a17_pro": {
+    "name": "Apple A17 Pro",
+    "int8_tops": 35,
+    "fp16_tflops": 17,
+    "ram_bandwidth_gbps": 68,
+    "typical_devices": ["iPhone 15 Pro", "iPhone 15 Pro Max"]
+  },
+  "a15_bionic": {
+    "name": "Apple A15 Bionic",
+    "int8_tops": 15,
+    "fp16_tflops": 7,
+    "ram_bandwidth_gbps": 51,
+    "typical_devices": ["iPhone 13", "iPhone 14", "iPhone SE 3rd gen"]
+  }
+}
