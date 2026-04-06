@@ -15,6 +15,8 @@ from auto_quant.benchmark.results import (
     save_unified_results,
     print_unified_table,
 )
+from auto_quant.report.pareto import run_pareto_report
+from auto_quant.report.exporter import export_best_model, print_final_summary
 
 app = typer.Typer(
     name="auto-quant",
@@ -143,7 +145,24 @@ def run(
         print_unified_table(unified)
         save_unified_results(unified, model_name)
 
-    console.print("\n[dim]Pareto report not yet implemented.[/dim]")
+    # Phase 4 — Pareto frontier report
+    if real_results or sim_results:
+        console.rule("[bold]Phase 4 - Pareto Frontier[/bold]")
+        pareto_output = run_pareto_report(
+            unified_results=unified,
+            model_name=model_name,
+        )
 
+        # Export best models
+        gguf_dir = Path("outputs/gguf") / model_name if real_results else None
+        tflite_dir = Path("outputs/tflite") / model_name if sim_results else None
+
+        exported = export_best_model(
+            pareto_output=pareto_output,
+            gguf_dir=gguf_dir,
+            tflite_dir=tflite_dir,
+        )
+
+        print_final_summary(pareto_output, exported, model_name)
 if __name__ == "__main__":
     app()
