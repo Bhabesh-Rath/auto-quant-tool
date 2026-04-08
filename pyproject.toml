@@ -1,5 +1,5 @@
 [project]
-name = "auto-quant"
+name = "auto-quant-tool"
 version = "0.1.0"
 description = "Automated quantization benchmarking suite for GGUF, GPTQ, and TFLite models"
 requires-python = ">=3.10"
@@ -38,5 +38,12 @@ auto-quant = "auto_quant.cli:app"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build.targets.wheel]
-packages = ["auto_quant"]
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "third_party/",
+    "outputs/",
+    "notebooks/",
+    "*.yaml",
+    ".venv/",
+]
+"*" = []

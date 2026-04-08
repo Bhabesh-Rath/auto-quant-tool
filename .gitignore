@@ -25,3 +25,6 @@ outputs/
 # OS
 .DS_Store
 Thumbs.db
+
+# llama.cpp isolated venv
+third_party/llama.cpp/.venv-convert/

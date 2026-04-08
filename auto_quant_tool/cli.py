@@ -24,7 +24,20 @@ app = typer.Typer(
 )
 console = Console()
 
-
+def _detect_device() -> str:
+    try:
+        import subprocess
+        result = subprocess.run(["nvidia-smi"], capture_output=True)
+        if result.returncode == 0:
+            return "cuda"
+    except FileNotFoundError:
+        pass
+    import platform
+    if platform.system() == "Darwin" and platform.machine() == "arm64":
+        return "metal"
+    return "cpu"
+    
+   
 @app.command()
 def run(
     config: Path = typer.Option(
@@ -40,7 +53,13 @@ def run(
         "--dry-run",
         help="Validate config and print planned steps without executing.",
     ),
+    device: str = typer.Option(
+        "auto",
+        "--device",
+        help="Compute device: auto, cuda, metal, cpu.",
+    ),
 ):
+    
     """
     Run the Auto-Quant benchmarking pipeline.
     """
@@ -114,6 +133,10 @@ def run(
     sim_results = None
     model_name = cfg.model.id.replace("/", "_")
 
+    resolved_device = _detect_device() if device == "auto" else device
+    console.print(f"[dim]Device: {resolved_device}[/dim]")
+    n_gpu_layers = 999 if resolved_device == "cuda" else 0
+    
     # Phase 3A — Real benchmark (GGUF)
     if QuantFormat.gguf in cfg.quantize.formats:
         console.rule("[bold]Phase 3A - Real Benchmark[/bold]")

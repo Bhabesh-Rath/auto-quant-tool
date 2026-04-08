@@ -146,6 +146,13 @@ def fetch_model(cfg: ModelConfig, cache_dir: Path = Path("outputs/models")) -> t
             raise ValueError(f"Model '{cfg.id}' not found on HuggingFace. Check the repo ID.")
         except HFValidationError:
             raise ValueError(f"Invalid HuggingFace repo ID: '{cfg.id}'")
+        except Exception as e:
+            if "timeout" in str(e).lower() or "connection" in str(e).lower():
+                raise ValueError(
+                    f"Network error fetching '{cfg.id}'. "
+                    "Check your internet connection and try again."
+                )
+            raise ValueError(f"Failed to fetch model '{cfg.id}': {e}")
 
     else:
         raise ValueError(f"Unknown model source: {cfg.source}")

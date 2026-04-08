@@ -196,6 +196,19 @@ def run_real_benchmark(
     console.print(f"Found {len(gguf_files)} GGUF variants to benchmark")
     console.print(f"GPU layers offloaded: {n_gpu_layers}\n")
 
+    # Resume support — check if results CSV already has this model
+    csv_path = output_base / f"{model_name}_benchmark.csv"
+    if csv_path.exists():
+        import csv as csv_mod
+        with open(csv_path) as f:
+            existing = list(csv_mod.DictReader(f))
+        existing_levels = {r["level"] for r in existing}
+        gguf_files = [f for f in gguf_files if f.stem.replace("model_", "") not in existing_levels]
+        if not gguf_files:
+            console.print("[dim]All variants already benchmarked — loading from CSV.[/dim]")
+            return existing
+        console.print(f"[dim]Resuming — {len(gguf_files)} variants remaining.[/dim]")
+        
     results = []
     for gguf_path in gguf_files:
         result = benchmark_gguf_file(

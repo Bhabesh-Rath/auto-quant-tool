@@ -126,14 +126,20 @@ def _quantize_gguf(f16_path: Path, output_dir: Path, level: GGUFLevel) -> Path:
     result = subprocess.run(cmd, capture_output=True, text=True)
 
     if result.returncode != 0:
+        stderr = result.stderr.lower()
+        if "out of memory" in stderr or "oom" in stderr:
+            raise RuntimeError(
+                f"Out of memory quantizing {level.value}. "
+                "Try a lower Q level or reduce system memory usage."
+            )
         console.print(f"[red]Quantization failed:[/red]\n{result.stderr}")
         raise RuntimeError(f"llama-quantize failed with code {result.returncode}")
 
     size_mb = output_path.stat().st_size / (1024 * 1024)
     console.print(f"[green]Quantized:[/green] {output_path.name} ({size_mb:.1f} MB)")
+           
     return output_path
-
-
+    
 def run_gguf_quantization(
     model_dir: Path,
     levels: list[GGUFLevel],
