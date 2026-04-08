@@ -1,4 +1,4 @@
-# Auto-Quant
+# Auto-Quant-Tool
 
 Automated quantization benchmarking suite for GGUF, GPTQ, and TFLite models.
 Pulls a model from HuggingFace, generates multiple quantized variants, benchmarks
@@ -14,8 +14,8 @@ accuracy-to-speed tradeoff.
 
 ### 1. Clone the repo
 ```bash
-git clone --recurse-submodules https://github.com/YOUR_USERNAME/auto-quant.git
-cd auto-quant
+git clone --recurse-submodules https://github.com/YOUR_USERNAME/auto-quant-tool.git
+cd auto-quant-tool
 ```
 
 ### 2. Base install (all platforms)
@@ -30,13 +30,13 @@ python setup/install_backends.py
 
 ### 4. Launch the web UI
 ```bash
-uv run python -m auto_quant.cli ui
+uv run python -m auto_quant_tool.cli ui
 ```
 Then open http://localhost:7860 in your browser.
 
 ### 5. Or run via CLI
 ```bash
-uv run python -m auto_quant.cli run --config sample_llm.yaml
+uv run python -m auto_quant_tool.cli run --config sample_llm.yaml
 ```
 
 ---
